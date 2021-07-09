@@ -2,6 +2,7 @@ package ru.netology.manager;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.netology.comparator.TicketOfferComparator;
 import ru.netology.domain.TicketOffer;
 import ru.netology.repository.TicketOfferRepository;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 public class TicketOfferManagerTest {
     TicketOfferRepository repository = new TicketOfferRepository();
-    TicketOfferManager manager = new TicketOfferManager(repository);
+    TicketOfferManager manager = new TicketOfferManager();
     private TicketOffer first = new TicketOffer(1, 100_000, "KUF", "OGZ", 60);
     private TicketOffer second = new TicketOffer(2, 800_000, "FRU", "EGO", 80);
     private TicketOffer third = new TicketOffer(3, 200_000, "GOJ", "KUF", 100);
@@ -36,22 +37,22 @@ public class TicketOfferManagerTest {
         assertArrayEquals(actual, expected);
     }
 
-    // Найти одно предложение, для покупки билета, по аэропорту вылета и прилета;
+    // Найти одно предложение, для покупки билета;
     @Test
     public void shouldFindOneTicketOffer() {
 
         TicketOffer[] expected = new TicketOffer[]{second};
-        TicketOffer[] actual = manager.searchBy("FRU", "EGO");
+        TicketOffer[] actual = manager.searchBy("FRU", "EGO", new TicketOfferComparator());
 
         assertArrayEquals(actual, expected);
     }
 
-    // Найти два предложения, для покупки билета, по аэропорту вылета и прилета;
+    // Найти два предложения, для покупки билета;
     @Test
     public void shouldFindTwoTicketsOffer() {
 
         TicketOffer[] expected = new TicketOffer[]{third, fourth};
-        TicketOffer[] actual = manager.searchBy("GOJ", "KUF");
+        TicketOffer[] actual = manager.searchBy("GOJ", "KUF", new TicketOfferComparator());
 
         assertArrayEquals(actual, expected);
     }
@@ -61,19 +62,7 @@ public class TicketOfferManagerTest {
     public void shouldNotFindTicketOffer() {
 
         TicketOffer[] expected = new TicketOffer[]{};
-        TicketOffer[] actual = manager.searchBy("GOJ", "OGZ");
-
-        assertArrayEquals(actual, expected);
-    }
-
-    // Удалить билет по id;
-    @Test
-    public void shouldRemoveByIdOneTicket() {
-
-        manager.removeById(2);
-
-        TicketOffer[] expected = new TicketOffer[]{first, third, fourth};
-        TicketOffer[] actual = repository.findAll();
+        TicketOffer[] actual = manager.searchBy("GOJ", "OGZ", new TicketOfferComparator());
 
         assertArrayEquals(actual, expected);
     }
